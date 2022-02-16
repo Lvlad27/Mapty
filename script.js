@@ -94,6 +94,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 
 class App {
   #map;
+  #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
 
@@ -121,7 +122,7 @@ class App {
 
     const coords = [latitude, longitude];
 
-    this.#map = L.map('map').setView(coords, 13);
+    this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
 
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution:
@@ -211,6 +212,9 @@ class App {
     form.style.display = 'none';
     form.classList.add('hidden');
     setTimeout(() => (form.style.display = 'grid'), 1000);
+
+    // Set local storage to all workouts
+    // this._setLocalStorage();
   }
 
   _renderWorkoutMarker(workout) {
@@ -294,7 +298,18 @@ class App {
       work => work.id === workoutEl.dataset.id
     );
     console.log(workout);
+
+    this.#map.setView(workout.coords, this.#mapZoomLevel, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
   }
+
+  // _setLocalStorage() {
+  //   localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+  // }
 }
 
 const app = new App();
